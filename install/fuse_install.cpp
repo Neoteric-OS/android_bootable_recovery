@@ -60,8 +60,6 @@ static void SetSdcardUpdateBootloaderMessage() {
 
 // Returns the selected filename, or an empty string.
 static std::string BrowseDirectory(const std::string& path, Device* device, RecoveryUI* ui) {
-  ensure_path_mounted(path);
-
   std::unique_ptr<DIR, decltype(&closedir)> d(opendir(path.c_str()), closedir);
   if (!d) {
     PLOG(ERROR) << "error opening " << path;
@@ -142,12 +140,6 @@ static bool StartInstallPackageFuse(std::string_view path) {
   if (!fuse_data_provider || !fuse_data_provider->Valid()) {
     LOG(ERROR) << "Failed to create fuse data provider.";
     return false;
-  }
-
-  if (android::base::StartsWith(path, SDCARD_ROOT)) {
-    // The installation process expects to find the sdcard unmounted. Unmount it with MNT_DETACH so
-    // that our open file continues to work but new references see it as unmounted.
-    umount2("/data", MNT_DETACH);
   }
 
   return run_fuse_sideload(std::move(fuse_data_provider)) == 0;
