@@ -909,8 +909,7 @@ Device::BuiltinAction start_recovery(Device* device, const std::vector<std::stri
   std::string ver_date = ver_date_match.str(1);  // Empty if no match.
 
   std::vector<std::string> title_lines = {
-    "Version: " + android::base::GetProperty("ro.zeph.display.version", "(unknown)") +
-        "-" + ver_date,
+    "Version: " + android::base::GetProperty("ro.zeph.version", "(unknown)")
   };
   if (android::base::GetBoolProperty("ro.build.ab_update", false)) {
     std::string slot = android::base::GetProperty("ro.boot.slot_suffix", "");
